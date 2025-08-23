@@ -16,7 +16,9 @@ MODES = {
     "humble_brag": {
         "system": "Answer confidently and highlight achievements while remaining grounded. Use short examples and quantify impact when possible.",
         "temperature": 0.3
-    }
+    },
+    "system": "Answer as a self-reflection. Focus on tasks that energize or drain the candidate, collaboration style, and growth areas. Use first-person reflective voice.",
+    "temperature": 0.7
 }
 
 def construct_prompt(mode_key: str, context_chunks: list, user_question: str):
