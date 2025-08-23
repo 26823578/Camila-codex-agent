@@ -14,20 +14,37 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 st.set_page_config(page_title="Personal Codex", layout="wide")
 st.title("Personal Codex — Candidate Agent")
 
-# Left column: controls
-col1, col2 = st.columns([1,3])
+# Sidebar: upload + ingest controls
+with st.sidebar:
+    st.header("Data Management")
+    uploaded = st.file_uploader("Upload documents", accept_multiple_files=True, type=["pdf", "txt", "docx"])
+    if uploaded:
+        os.makedirs("data", exist_ok=True)
+        for f in uploaded:
+            path = os.path.join("data", f.name)
+            with open(path, "wb") as out:
+                out.write(f.getbuffer())
+        st.success("Files saved to /data.")
+
+    if st.button("Re-run ingest"):
+        with st.spinner("Rebuilding FAISS index..."):
+            proc = subprocess.run(["python", "ingest.py"], capture_output=True, text=True)
+            if proc.returncode == 0:
+                st.success("Ingest finished successfully!")
+            else:
+                st.error("Ingest failed.")
+                st.code(proc.stderr)
+
+    st.header("Project Links")
+    st.markdown("- [README](README.md)\n- [Artifacts](artifacts/)")
+
+# Main layout: Q&A controls and results
+col1, col2 = st.columns([1, 3])
 
 with col1:
     st.header("Controls")
-    mode = st.selectbox("Mode", ["interview","story","fast","humble_brag"], index=0)
+    mode = st.selectbox("Mode", ["interview", "story", "fast", "humble_brag"], index=0)
     k = st.slider("Retrieval chunks (k)", 1, 8, 4)
-    st.write("Upload files to /data to update the knowledge base.")
-    if st.button("Re-run ingest (reads ./data)"):
-        st.info("Running ingest.py...")
-        # run ingest script (assuming ingest.py is present)
-        proc = subprocess.run(["python","ingest.py"], capture_output=True, text=True)
-        st.code(proc.stdout + "\n\n" + proc.stderr)
-        st.success("Ingest finished.")
 
 with col2:
     st.header("Ask the Codex")
@@ -36,7 +53,7 @@ with col2:
         with st.spinner("Retrieving..."):
             context_chunks = retrieve(q, k=k)
         prompt, mode_info = construct_prompt(mode, context_chunks, q)
-        
+
         try:
             resp = openai.ChatCompletion.create(
                 model=OPENAI_MODEL,
@@ -57,7 +74,5 @@ with col2:
         st.subheader("Supporting chunks (top k)")
         for i, c in enumerate(context_chunks):
             st.markdown(f"**{i+1}. Source:** `{c['meta']['source']}` (chunk {c['meta']['chunk']})")
-            st.write(c['text'][:800] + ("..." if len(c['text'])>800 else ""))
+            st.write(c['text'][:800] + ("..." if len(c['text']) > 800 else ""))
 
-st.sidebar.header("Project links")
-st.sidebar.markdown("- README\n- artifacts/\n")
