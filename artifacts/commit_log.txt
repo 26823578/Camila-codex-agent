@@ -1,0 +1,23 @@
+# Commit Log — AI Graduate Engineer Project
+# Purpose: Show transparency in AI-assisted development and manual work.
+
+2025-08-21 10:05 - feat: add ingest.py (AI-assisted, manually enhanced)
+2025-08-21 10:30 - refactor: improved chunking and overlap handling
+2025-08-21 11:00 - feat: retrieval utility for FAISS
+2025-08-21 12:15 - feat: initial Streamlit UI structure
+2025-08-21 12:45 - feat: added mode switcher to UI
+2025-08-21 13:10 - feat: prompt templates for all modes
+2025-08-21 14:00 - feat: sidebar upload and ingestion trigger
+2025-08-21 14:30 - feat: rebuild FAISS from UI
+2025-08-21 15:00 - feat: show supporting chunks
+2025-08-21 15:30 - feat: integrated OpenAI API with dynamic prompts
+2025-08-21 16:00 - feat: dotenv support for API key
+2025-08-21 16:30 - fix: API error handling
+2025-08-21 17:00 - perf: batch embeddings in ingestion
+2025-08-21 17:30 - docs: added Streamlit Cloud deployment guide
+2025-08-21 18:00 - docs: added agent_instructions.md
+2025-08-21 18:15 - docs: added commit log template
+2025-08-21 18:45 - style: improved Streamlit UI
+2025-08-21 19:10 - feat: added mode info tooltips
+2025-08-21 19:30 - fix: handle empty input gracefully
+2025-08-21 20:00 - chore: prepared artifacts directory
