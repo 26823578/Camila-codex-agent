@@ -1,6 +1,6 @@
 import streamlit as st
 from dotenv import load_dotenv
-import os
+import os 
 from utils import retrieve
 from prompts import construct_prompt
 import openai
