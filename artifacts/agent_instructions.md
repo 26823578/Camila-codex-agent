@@ -3,7 +3,7 @@
 This document defines the virtual agents, their roles, and operational constraints used during the development of the **Personal Codex** system. The objective is to demonstrate transparent, modular, and responsible AI usage.
 
 
-## 🧩 Multi-Agent Design Overview
+## Multi-Agent Design Overview
 Although implemented in a single codebase, the project is conceptually structured as **five sub-agents**, each with a clearly defined scope, input/output expectations, and ethical constraints.
 
 
