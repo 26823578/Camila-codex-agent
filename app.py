@@ -13,7 +13,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Streamlit page setup
 st.set_page_config(page_title="Personal Codex", layout="wide")
-st.title("Personal Codex — Candidate Agent")
+st.title("Welcome To Your Personal Codex — Candidate Agent")
 
 # Sidebar: Upload & Ingest Controls
 with st.sidebar:
