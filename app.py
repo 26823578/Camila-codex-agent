@@ -19,7 +19,7 @@ st.title("Welcome To Your Personal Codex — Candidate Agent")
 with st.sidebar:
     st.header("Data Management")
     uploaded = st.file_uploader(
-        "Upload your CV and supporting documents",
+        "Upload your CV and supporting documents to begin",
         accept_multiple_files=True,
         type=["pdf", "txt", "docx"]
     )
