@@ -1,35 +1,75 @@
-BASE_INSTRUCTIONS = """You are the personal codex of the candidate. Use the provided context to answer precisely and honestly. If the answer is not found directly, say so and offer a reasonable, transparent inference or ask to see more documents."""
+# Reasoning: prompts.py centralises all prompt templates for easy maintenance 
+# and mode-specific customisation. System prompt sets the agent's voice and 
+# mode behavior. User prompt injects retrieved chunks and question. This allows
+# creative prompt strategies as per bonus. Modes are defined to match brief: 
+# interview (professional), story (narrative), fast (bullets), humble_brag (confident).
 
-MODES = {
-    "interview": {
-        "system": "Answer in a concise, professional style suitable for a technical interview. Keep answers to 2-4 sentences. When listing skills, be specific (languages, frameworks, years).",
-        "temperature": 0.0
-    },
-    "story": {
-        "system": "Answer in a narrative, first-person voice. Provide short anecdotes and be reflective; 4-6 sentences.",
-        "temperature": 0.7
-    },
-    "fast": {
-        "system": "Answer in bullet points. Each bullet is a quick fact or short sentence. Keep it short.",
-        "temperature": 0.0
-    },
-    "humble_brag": {
-        "system": "Answer confidently and highlight achievements while remaining grounded. Use short examples and quantify impact when possible.",
-        "temperature": 0.3
-    },
-    "system": "Answer as a self-reflection. Focus on tasks that energize or drain the candidate, collaboration style, and growth areas. Use first-person reflective voice.",
-    "temperature": 0.7
-}
+def construct_prompt(mode, context_chunks, question):
+    """
+    Builds a system prompt for the LLM based on the selected mode.
+    Includes retrieved context for grounding answers.
+    """
 
-def construct_prompt(mode_key: str, context_chunks: list, user_question: str):
-    mode = MODES.get(mode_key, MODES["interview"])
-    system = BASE_INSTRUCTIONS + "\n\n" + mode["system"]
-    # include source metadata
-    context_texts = []
-    for c in context_chunks:
-        src = c.get("meta", {}).get("source", "unknown")
-        chunk_id = c.get("meta", {}).get("chunk", 0)
-        context_texts.append(f"[source: {src} | chunk:{chunk_id}]\n{c['text']}")
-    context = "\n\n---\n\n".join(context_texts)
-    prompt = f"{system}\n\nContext:\n{context}\n\nUser: {user_question}\n\nAnswer:"
-    return prompt, mode
+    # Combine all context into one string
+    context_text = "\n\n".join(
+        [f"Source: {c['meta']['source']} | Chunk: {c['meta']['chunk']}\n{c['text']}" for c in context_chunks]
+    )
+
+    # Mode-specific instructions
+    if mode == "interview":
+        system_prompt = f"""
+You are acting as the candidate in a job interview. Answer in FIRST-PERSON, professional, and concise.
+If asked about skills or technologies, list them clearly (e.g., "I have 3 years of experience in Python, 2 years in SQL").
+Base answers ONLY on the context provided. Do NOT invent details not in the context.
+
+Context:
+{context_text}
+
+Question:
+{question}
+"""
+        mode_info = {"temperature": 0.3}
+
+    elif mode == "story":
+        system_prompt = f"""
+You are writing a short story or narrative answer about yourself, using a friendly tone.
+Use the provided context as inspiration for the details. Be engaging but truthful.
+
+Context:
+{context_text}
+
+Question:
+{question}
+"""
+        mode_info = {"temperature": 0.7}
+
+    elif mode == "fast":
+        system_prompt = f"""
+Answer the question in ONE OR TWO sentences maximum, using a direct tone.
+Stick strictly to the context provided.
+
+Context:
+{context_text}
+
+Question:
+{question}
+"""
+        mode_info = {"temperature": 0.2}
+
+    elif mode == "humble_brag":
+        system_prompt = f"""
+Answer in a confident and professional tone that subtly highlights achievements without sounding arrogant.
+Base your response on the context only.
+
+Context:
+{context_text}
+
+Question:
+{question}
+"""
+        mode_info = {"temperature": 0.5}
+
+    else:
+        raise ValueError(f"Unknown mode: {mode}")
+
+    return system_prompt.strip(), mode_info
