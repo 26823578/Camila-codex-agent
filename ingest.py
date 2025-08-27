@@ -56,11 +56,12 @@ def chunk_text(text, chunk_size=450, overlap=50):
     return chunks
 
 def embed_text(texts):
-    response = openai.Embedding.create(
+    client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    response = client.embeddings.create(
         model=EMBED_MODEL,
         input=texts
     )
-    return [np.array(e["embedding"], dtype=np.float32) for e in response["data"]]
+    return [np.array(e.embedding, dtype=np.float32) for e in response.data]
 
 def main():
     print("Starting ingestion...")
