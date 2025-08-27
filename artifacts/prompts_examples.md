@@ -2,8 +2,9 @@
 
 This document contains representative prompts used during development, with reasoning for each. These examples illustrate structured AI-assisted problem-solving and intentional design choices.
 
+1.1 Project prompt:You are a senior AI engineer and systems architect. You will design and implement a complete RAG-based app called “Personal Codex — Candidate Agent” entirely from scratch based on the project brief I provide. Think critically, minimize assumptions, and deliver runnable, high-quality code.
 
-### 1. Prompt: Generate Chunking Logic
+### 1.1 Prompt: Generate Chunking Logic
 **Prompt:**  
 "Write Python code to split a long text into ~400 token-ish chunks with a ~50 token overlap. Prefer sentence boundaries. Use nltk's sent_tokenize. Return a list of strings."
 

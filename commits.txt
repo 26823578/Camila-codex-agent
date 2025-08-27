@@ -1,0 +1,19 @@
+4b8ecf9 | Camila Nkhama | 2025-08-27 20:01:55 +0000 | Use openai.OpenAI() to create a client. Use client.embeddings.create(...) instead of openai.Embedding.create(...). Access embeddings with e.embedding instead of e["embedding"].
+180f9d5 | Camila Nkhama | 2025-08-26 11:42:04 +0000 | UI testing
+ba98889 | Camila Nkhama | 2025-08-26 11:40:10 +0000 | testing UI options
+696259f | Camila Nkhama | 2025-08-26 11:37:51 +0000 | testing alternative utils.py
+c6898a7 | Camila Nkhama | 2025-08-26 11:36:12 +0000 | ingest improvement
+31d06c5 | Camila Nkhama | 2025-08-26 11:34:37 +0000 |  4 modes (interview, story, fast, humble_brag) so answers feel realistic
+3c00eca | Camila Nkhama | 2025-08-26 11:32:39 +0000 | Streamlit UI improvements, better error handling, mode explanations, and sample questions
+0936a1f | Camila Nkhama | 2025-08-24 23:30:07 +0000 | change
+a87507a | Camila Nkhama | 2025-08-24 18:44:52 +0000 | agent details
+e99304a | Camila Nkhama | 2025-08-24 17:45:07 +0000 | created prompt examples with reasoning + instructions for the agent
+cd4aee0 | Camila Nkhama | 2025-08-24 11:06:44 +0200 | Added Dev Container Folder
+e3682b2 | Camila Nkhama | 2025-08-23 22:08:28 +0000 | added sidebar file upload and ingest workflow with improved Q&A layout - Separates data management from Q&A controls for better usability - Allows dynamic document uploads and index rebuilding without redeploy
+8de25a6 | Camila Nkhama | 2025-08-23 22:00:24 +0000 | added self-relection feature
+ecd9c30 | Camila Nkhama | 2025-08-23 20:55:44 +0000 | - Separate controls and Q&A into columns for clarity - Mode and k are configurable to test different retrieval/answering styles - Added ingest trigger for quick dataset updates without redeploy - Display retrieved chunks for transparency and traceability
+3663cdb | Camila Nkhama | 2025-08-23 20:47:35 +0000 | added separate mode definitions so it’s simple to add/remove modes. construct_prompt concatenates retrieved chunks (with source metadata) so reviewer can validate the grounding.
+daafd45 | Camila Nkhama | 2025-08-23 20:26:56 +0000 | Keeping retrieval logic separate makes the codebase more modular and easier to maintain. If retrieval is isolated (e.g., in rag.py), I can adjust chunking, embeddings, or retriever parameters without touching the core agent logic. This separation also makes testing simpler (unit test retrieval independently), allows swapping retrievers (e.g., FAISS → Chroma → pgvector), and keeps the agent’s job focused on prompt orchestration and response generation. In short, retrieval returns the top-k chunks to feed into the prompt, while the agent logic stays clean and adaptable.
+5a0ff01 | Camila Nkhama | 2025-08-23 20:19:32 +0000 | Ingest.py is designed for simplicity and robustness. It segments text by sentences rather than fixed character lengths, improving coherence. Context is preserved across chunks using overlap. It leverages OpenAI embeddings for high-quality semantic representation and FAISS for fast, local similarity search.
+ed956ba | Camila Nkhama | 2025-08-23 20:06:35 +0000 | created project files
+f64a03a | Camila Nkhama | 2025-08-23 19:22:22 +0200 | Initial commit
