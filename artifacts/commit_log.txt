@@ -1,22 +1,93 @@
-# Commit Log — AI Graduate Engineer Project
+# Commit Log — Personal Codex Project
 # Purpose: Show transparency in AI-assisted development and manual work.
- - feat: add ingest.py (AI-assisted, manually enhanced)
- - refactor: improved chunking and overlap handling
-- feat: retrieval utility for FAISS
- - feat: initial Streamlit UI structure
- - feat: added mode switcher to UI
- - feat: prompt templates for all modes
- - feat: sidebar upload and ingestion trigger
- - feat: rebuild FAISS from UI
- - feat: show supporting chunks
-- feat: integrated OpenAI API with dynamic prompts
-- feat: dotenv support for API key
-- fix: API error handling
-- perf: batch embeddings in ingestion
-- docs: added Streamlit Cloud deployment guide
-- docs: added agent_instructions.md
-- docs: added commit log template
-- style: improved Streamlit UI
-- feat: added mode info tooltips
-- fix: handle empty input gracefully
-- chore: prepared artifacts directory
+# Format: [Commit Hash] | [Date] | [AI Tool] | [Description] | [AI vs Manual]
+
+## Project Development Timeline
+
+**f64a03a** | 2025-08-23 19:22:22 +0200 | ChatGPT | Initial commit
+- AI-assisted: Full project architecture and core file structure
+- Manual: Repository setup and initial documentation
+
+**ed956ba** | 2025-08-23 20:06:35 +0000 | Claude | created project files  
+- AI-assisted: Basic ingestion pipeline and document processing
+- Manual: File organisation and import structure
+
+**5a0ff01** | 2025-08-23 20:19:32 +0000 | Grok | Ingest.py designed for simplicity and robustness
+- AI-assisted: Sentence-based chunking and embedding generation
+- Manual: Error handling improvements and progress indicators
+
+**daafd45** | 2025-08-23 20:26:56 +0000 | ChatGPT | Modular retrieval system
+- AI-assisted: Separation of retrieval logic for maintainability
+- Manual: Enhanced modularity and testing considerations
+
+**3663cdb** | 2025-08-23 20:47:35 +0000 | Claude + Chatgpt | added separate mode definitions
+- AI-assisted: Multi-mode conversation system with prompt templates
+- Manual: Fine-tuning of mode personalities and temperature settings
+
+**ecd9c30** | 2025-08-23 20:55:44 +0000 | ChatGPT | Streamlit UI with controls and Q&A layout
+- AI-assisted: Two-column layout and basic UI components
+- Manual: Visual hierarchy and user experience improvements
+
+**8de25a6** | 2025-08-23 22:00:24 +0000 | Grok + Chatgpt | added self-reflection feature
+- AI-assisted: Dynamic document processing capabilities  
+- Manual: Integration with existing pipeline
+
+**e3682b2** | 2025-08-23 22:08:28 +0000 | Claude | added sidebar file upload and ingest workflow
+- AI-assisted: File upload functionality and UI components
+- Manual: Progress feedback and error handling enhancement
+
+**cd4aee0** | 2025-08-24 11:06:44 +0200 | Manual | Added Dev Container Folder
+- Manual: Development environment configuration
+- AI-assisted: None (pure manual configuration)
+
+**e99304a** | 2025-08-24 17:45:07 +0000 | ChatGPT | created prompt examples with reasoning
+- AI-assisted: Documentation templates and examples
+- Manual: Specific prompt refinements and reasoning explanations
+
+**a87507a** | 2025-08-24 18:44:52 +0000 | Grok | agent details
+- AI-assisted: Agent instruction framework
+- Manual: Multi-AI collaboration documentation
+
+**0936a1f** | 2025-08-24 23:30:07 +0000 | Manual | change
+- AI-assisted: Minor UI and functionality improvements
+- Manual: Bug fixes and polish
+
+**3c00eca** | 2025-08-26 11:32:39 +0000 | ChatGPT | Streamlit UI improvements, better error handling
+- AI-assisted: Enhanced error messages and user feedback
+- Manual: UI polish and professional presentation
+
+**31d06c5** | 2025-08-26 11:34:37 +0000 | Claude + Manual | 4 modes (interview, story, fast, humble_brag)
+- AI-assisted: Mode implementation and switching logic
+- Manual: Personality fine-tuning for authentic responses
+
+**c6898a7** | 2025-08-26 11:36:12 +0000 | Grok + Manual| ingest improvement
+- AI-assisted: Enhanced document processing pipeline
+- Manual: Robustness and edge case handling
+
+**696259f** | 2025-08-26 11:37:51 +0000 | ChatGPT | testing alternative utils.py
+- AI-assisted: Alternative retrieval implementations
+- Manual: Performance testing and optimisation
+
+**ba98889** | 2025-08-26 11:40:10 +0000 | Claude + Manual| testing UI options
+- AI-assisted: UI component experimentation
+- Manual: User experience validation
+
+**180f9d5** | 2025-08-26 11:42:04 +0000 | Manual | UI testing
+- Manual: Final UI testing and validation
+- AI-assisted: None (manual testing phase)
+
+**4b8ecf9** | 2025-08-27 20:01:55 +0000 | ChatGPT | Use openai.OpenAI() to create a client
+- AI-assisted: OpenAI API migration to latest client pattern
+- Manual: Consistency checks across all files
+
+
+
+**Development Approach:**
+- Started with high-level system design from ChatGPT
+- Used Claude for user-facing components and documentation
+- Applied Grok for modular design and error handling
+- Manual work focused on integration, testing, and refinement
+
+**Key Learning:** Different AI assistants excel at different aspects of software development, and combining their strengths produces higher quality results than using a single AI tool.
+
+ALL CODE I MANUALLY EXAMINED AND EDITED ACCORDINGLY TO FIT MY ENVISIONED PROJECT STRUCTURE.
