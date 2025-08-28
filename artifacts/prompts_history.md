@@ -1,316 +1,282 @@
-# Prompts History — AI Graduate Engineer Project
+# Prompts History — Personal Codex Project
 
-This file documents interactions with AI coding assistants (e.g., ChatGPT, Copilot) during project development.  
-Each entry includes: **Prompt**, **AI Response summary**, **Manual Edits**, and **Commit message**.
-
----
-
-### Prompt 1 → Create `ingest.py` for FAISS
-**Prompt:**  
-"Write a Python script to ingest PDF and text files, chunk by sentences, embed using OpenAI embeddings, and store FAISS index."
-
-**AI Response:**  
-- Generated script using PyPDF2 and FAISS.
-- Used `text-embedding-ada-002`.
-
-**Manual edits:**  
-- Changed model to `text-embedding-3-small`.
-- Added overlap logic.
-- Added JSONL metadata output.
-
-**Commit:**  
-`2025-08-21 10:05 - feat: add ingest.py (AI-assisted, manually enhanced)`
+This file documents interactions with AI coding assistants (ChatGPT, Claude, Grok) during project development.  
+Each entry includes: **AI Tool Used**, **Prompt**, **AI Response summary**, **Manual Edits**, and **Commit message**.
 
 ---
 
-### Prompt 2 → Improve chunking method
+### Initial Project Prompt → Full System Architecture
+**AI Tool:** ChatGPT, Claude, Grok (Asked all tools, compared output snd combined ideas, using the best solution for each approach)
 **Prompt:**  
-"Add overlapping chunks (50 tokens) and token counting with tiktoken to ingest.py."
+"You are a senior AI engineer and systems architect. You will design and implement a complete RAG-based app called 'Personal Codex — Candidate Agent' entirely from scratch based on the project brief I provide. Think critically, minimize assumptions, and deliver runnable, high-quality code."
 
 **AI Response:**  
-- Added overlap logic and token-based splitting.
+- Generated complete project structure with RAG pipeline
+- Created ingest.py, app.py, utils.py, and prompts.py
+- Suggested FAISS for vector storage and Streamlit for UI
+- Provided requirements.txt and basic README structure
 
 **Manual edits:**  
-- Fixed bug in token count for last chunk.
-- Increased overlap from 30 to 50 tokens.
+- Updated OpenAI API calls to use newer client pattern
+- Modified chunking strategy for better sentence boundaries
+- Added multiple conversation modes (interview, story, fast, humble_brag)
+- Enhanced error handling throughout
 
-**Commit:**  
-`2025-08-21 10:30 - refactor: improved chunking and overlap handling`
+**Commit:**   - Initial commit with full RAG architecture`
 
 ---
 
-### Prompt 3 → Create `utils.py` retrieval function
+### Prompt 1 → Create `ingest.py` for Document Processing
+**AI Tool:** Claude  
 **Prompt:**  
-"Write a function `retrieve(query, k)` that loads FAISS index and returns top-k chunks with metadata."
+"Improve the document ingestion pipeline. Use sentence tokenisation instead of fixed chunks, add overlap between chunks, and ensure robust PDF/DOCX/TXT parsing."
 
 **AI Response:**  
-- Implemented FAISS search and returned scores.
+- Implemented NLTK sentence tokenisation
+- Added 50-token overlap between chunks
+- Created robust file type detection and parsing
 
 **Manual edits:**  
-- Added metadata from docs.jsonl.
-- Handled missing index with custom error.
+- Switched from `text-embedding-ada-002` to `text-embedding-3-small`
+- Added progress indicators during ingestion
+- Enhanced metadata structure with chunk IDs
 
 **Commit:**  
-`2025-08-21 11:00 - feat: retrieval utility for FAISS`
+- created project files`
 
 ---
 
-### Prompt 4 → Build Streamlit UI skeleton
+### Prompt 2 → Modular Retrieval System
+**AI Tool:** Grok  
 **Prompt:**  
-"Create a Streamlit app with two columns: left for controls, right for query input and answers."
+"Create a separate utils.py module for retrieval logic. Keep it isolated from the main app for better modularity and testing."
 
 **AI Response:**  
-- Generated a simple layout with columns.
+- Designed clean retrieval interface
+- Implemented FAISS index loading and query processing
+- Added error handling for missing indices
 
 **Manual edits:**  
-- Styled UI with headers.
-- Added spinner during retrieval.
+- Added metadata retrieval from JSONL files
+- Improved error messages for better UX
+- Added query embedding caching considerations
 
 **Commit:**  
-`2025-08-21 12:15 - feat: initial Streamlit UI structure`
+- Ingest.py updated, designed for simplicity and robustness`
 
 ---
 
-### Prompt 5 → Add mode switcher to UI
+### Prompt 3 → Multi-Mode Conversation System
+**AI Tool:** ChatGPT  
 **Prompt:**  
-"Add a dropdown to select modes: interview, story, fast, humble_brag."
+"Design a prompt system that can switch between different conversation modes: professional interview style, narrative storytelling, quick facts, and confident self-promotion."
 
 **AI Response:**  
-- Implemented selectbox and passed mode to prompt constructor.
+- Created mode-specific prompt templates
+- Implemented temperature controls for each mode
+- Added context injection with source attribution
 
 **Manual edits:**  
-- Styled sidebar controls.
-- Added info about each mode in README.
+- Fine-tuned prompt language for authenticity
+- Added explicit first-person instructions for interview mode
+- Enhanced context formatting with source metadata
 
 **Commit:**  
-`2025-08-21 12:45 - feat: added mode switcher to UI`
+- added separate mode definitions`
 
 ---
 
-### Prompt 6 → Create `prompts.py` with dynamic templates
+### Prompt 4 → Streamlit UI Development
+**AI Tool:** Claude  
 **Prompt:**  
-"Write a function construct_prompt(mode, context_chunks, question) with templates for each mode."
+"Build a clean Streamlit interface with file upload, mode selection, and real-time document ingestion. Make it user-friendly for non-technical users."
 
 **AI Response:**  
-- Created four templates with placeholders.
+- Created two-column layout with controls and Q&A sections
+- Added sidebar for data management
+- Implemented file upload with progress feedback
 
 **Manual edits:**  
-- Added explicit context block with sources.
-- Added markdown formatting for answers.
+- Added mode explanations and sample questions
+- Enhanced visual hierarchy with better headers
+- Added expandable context display for transparency
 
 **Commit:**  
-`2025-08-21 13:10 - feat: prompt templates for all modes`
+ - Separate controls and Q&A into columns`
 
 ---
 
-### Prompt 7 → Improve UI with sidebar upload
+### Prompt 5 → Dynamic Document Upload
+**AI Tool:** Grok  
 **Prompt:**  
-"Add sidebar file uploader to Streamlit and save files to /data folder."
+"Add functionality to upload new documents through the UI and trigger re-ingestion without redeploying the app."
 
 **AI Response:**  
-- Added `st.file_uploader()`.
+- Implemented multi-file upload widget
+- Added subprocess call to run ingest.py
+- Created progress indicators and error handling
 
 **Manual edits:**  
-- Added success message after save.
-- Added ingest trigger button.
+- Added file validation and size limits
+- Enhanced error reporting with detailed logs
+- Improved success/failure feedback messages
 
 **Commit:**  
-`2025-08-21 14:00 - feat: sidebar upload and ingestion trigger`
+- added self-reflection feature`
+
+### Prompt 6 → Advanced RAG with Context Display
+**AI Tool:** ChatGPT  
+**Prompt:**  
+"Enhance the RAG system to show supporting context chunks with source attribution. Make the system transparent so users can verify answers."
+
+**AI Response:**  
+- Added expandable context sections
+- Implemented source metadata display
+- Created chunk preview with character limits
+
+**Manual edits:**  
+- Limited chunk previews to 800 characters
+- Added chunk numbering for easy reference
+- Enhanced markdown formatting for readability
+
+**Commit:**  
+`- added sidebar file upload and ingest workflow`
 
 ---
 
-### Prompt 8 → Add FAISS rebuild on upload
+### Prompt 7 → API Integration and Error Handling
+**AI Tool:** Claude  
 **Prompt:**  
-"When new files uploaded, provide a button to rebuild FAISS index."
+"Integrate OpenAI's ChatCompletion API with proper error handling, rate limiting considerations, and environment variable management."
 
 **AI Response:**  
-- Suggested subprocess call for ingest.py.
+- Implemented secure API key management
+- Added comprehensive try-catch blocks
+- Created user-friendly error messages
 
 **Manual edits:**  
-- Added spinner and error handling for ingestion.
+- Updated to use gpt-4o-mini for better performance
+- Added fallback model configuration
+- Enhanced error logging for debugging
 
 **Commit:**  
-`2025-08-21 14:30 - feat: rebuild FAISS from UI`
+- Added Dev Container Folder`
 
 ---
 
-### Prompt 9 → Display supporting chunks
+### Prompt 8 → Conversation Mode Refinement
+**AI Tool:** Grok  
 **Prompt:**  
-"After showing the answer, display top-k supporting chunks with source and snippet."
+"Refine the conversation modes to feel more natural and authentic. Each mode should have distinct personality while remaining grounded in the source documents."
 
 **AI Response:**  
-- Created markdown for sources.
+- Adjusted temperature settings per mode
+- Enhanced prompt instructions for personality
+- Added mode-specific response formatting
 
 **Manual edits:**  
-- Limited snippet length to 800 chars.
-- Highlighted chunk number.
+- Fine-tuned humble_brag mode to avoid arrogance
+- Enhanced story mode for better narrative flow
+- Optimised fast mode for conciseness
 
 **Commit:**  
-`2025-08-21 15:00 - feat: show supporting chunks`
+- created prompt examples with reasoning`
 
 ---
 
-### Prompt 10 → Add OpenAI API integration
+### Prompt 9 → OpenAI API Migration
+**AI Tool:** ChatGPT  
 **Prompt:**  
-"Integrate OpenAI ChatCompletion with the constructed prompt."
+"Update the codebase to use the appropriate OpenAI Python client with the new API patterns. Ensure compatibility and fix any deprecation warnings."
 
 **AI Response:**  
-- Wrote function with GPT-3.5 default.
+- Updated to openai.OpenAI() client pattern
+- Changed embedding creation method
+- Fixed response object access patterns
 
 **Manual edits:**  
-- Changed to `OPENAI_MODEL` env variable.
-- Used `gpt-4o-mini` for better quality.
+- Applied changes consistently across all files
+- Added proper client initialization
+- Updated error handling for new API responses
 
 **Commit:**  
-`2025-08-21 15:30 - feat: integrated OpenAI API with dynamic prompts`
+`- Use openai.OpenAI() to create a client`
 
 ---
 
-### Prompt 11 → Write .env loader
+### Prompt 10 → UI Polish and User Experience
+**AI Tool:** Claude  
 **Prompt:**  
-"Add dotenv support to load OPENAI_API_KEY."
+"Polish the Streamlit interface with better spacing, clearer instructions, and helpful tooltips. Make it feel professional and intuitive."
 
 **AI Response:**  
-- Added `load_dotenv()`.
+- Added mode explanations in sidebar
+- Created sample questions section
+- Improved visual hierarchy and spacing
 
 **Manual edits:**  
-- Added fallback model if not set.
-- Updated README.
+- Customised page title and layout
+- Added helpful placeholder text
+- Enhanced progress indicators and feedback
 
 **Commit:**  
-`2025-08-21 16:00 - feat: dotenv support for API key`
+- Streamlit UI improvements, better error handling`
 
 ---
 
-### Prompt 12 → Add error handling for API failures
+### Prompt 11 → Documentation and Transparency
+**AI Tool:** Grok  
 **Prompt:**  
-"Show an error message in Streamlit if OpenAI API call fails."
+"Review repository documents as submitted. Create comprehensive documentation showing the AI-assisted development process, including agent instructions, commit logs, and prompt history."
 
 **AI Response:**  
-- Added try/except with `st.error()`.
+- Generated agent_instructions.md template
+- Created commit log format
+- Suggested prompt history structure
 
 **Manual edits:**  
-- Logged full error details in code block.
+- Expanded to 5 conceptual sub-agents
+- Added governance and best practices sections
+- Enhanced transparency with detailed AI attribution
 
 **Commit:**  
-`2025-08-21 16:30 - fix: API error handling`
+`- agent details`
 
 ---
 
-### Prompt 13 → Optimize ingestion for large files
+### Prompt 12 → Final Integration and Testing
+**AI Tool:** ChatGPT  
 **Prompt:**  
-"Use batch embedding calls for efficiency during ingestion."
+"Review the entire codebase for consistency, fix any remaining API issues, and ensure all components work together seamlessly."
 
 **AI Response:**  
-- Added loop batching of 100 chunks.
+- Identified API inconsistencies across files
+- Suggested testing procedures
+- Recommended deployment preparations
 
 **Manual edits:**  
-- Reduced batch size to 50 for stability.
+- Fixed remaining deprecated API calls
+- Added comprehensive error handling
+- Prepared final documentation
 
 **Commit:**  
-`2025-08-21 17:00 - perf: batch embeddings in ingestion`
+` - UI testing`
 
 ---
 
-### Prompt 14 → Add README deployment steps
-**Prompt:**  
-"Write deployment instructions for Streamlit Cloud."
+## AI Collaboration Summary
 
-**AI Response:**  
-- Wrote steps for Streamlit Cloud.
+**Tools Used:**
+- **ChatGPT**: Primary system architecture, API integration, final code review
+- **Claude**: Document processing, UI development, documentation creation
+- **Grok**: Modular design, error handling, transparency features
 
-**Manual edits:**  
-- Added secret management and repo link format.
+**Development Approach:**
+- Started with high-level system prompt for full architecture
+- Iteratively refined components with different AI assistants
+- Combined AI suggestions with manual refinements for authenticity
+- Maintained transparency through detailed commit tracking
 
-**Commit:**  
-`2025-08-21 17:30 - docs: added Streamlit Cloud deployment guide`
-
----
-
-### Prompt 15 → Create agent_instructions.md
-**Prompt:**  
-"Write detailed roles and rules for sub-agents in multi-agent design."
-
-**AI Response:**  
-- Suggested basic roles for ingester and prompt-designer.
-
-**Manual edits:**  
-- Expanded to 5 agents, added governance section.
-
-**Commit:**  
-`2025-08-21 18:00 - docs: added agent_instructions.md`
-
----
-
-### Prompt 16 → Create commit log template
-**Prompt:**  
-"Give me a sample commit_log.txt format for transparency."
-
-**AI Response:**  
-- Provided timestamp + message format.
-
-**Manual edits:**  
-- Added tags like `AI-assisted`, `manual`.
-
-**Commit:**  
-`2025-08-21 18:15 - docs: added commit log template`
-
----
-
-### Prompt 17 → Improve UI aesthetics
-**Prompt:**  
-"Add spacing, headers, and better layout to Streamlit app."
-
-**AI Response:**  
-- Suggested using columns and headers.
-
-**Manual edits:**  
-- Added `st.set_page_config(layout="wide")` and reorganized.
-
-**Commit:**  
-`2025-08-21 18:45 - style: improved Streamlit UI`
-
----
-
-### Prompt 18 → Add mode descriptions in UI
-**Prompt:**  
-"Show tooltips or help text for each mode."
-
-**AI Response:**  
-- Added short descriptions in README.
-
-**Manual edits:**  
-- Implemented `st.info()` for mode hints.
-
-**Commit:**  
-`2025-08-21 19:10 - feat: added mode info tooltips`
-
----
-
-### Prompt 19 → Validate empty input
-**Prompt:**  
-"Prevent asking if question field is empty."
-
-**AI Response:**  
-- Added `if q.strip()` check.
-
-**Manual edits:**  
-- Added error message for blank input.
-
-**Commit:**  
-`2025-08-21 19:30 - fix: handle empty input gracefully`
-
----
-
-### Prompt 20 → Prepare artifacts directory
-**Prompt:**  
-"List final artifacts required: README, prompts history, agent instructions, commit log."
-
-**AI Response:**  
-- Provided list and structure.
-
-**Manual edits:**  
-- Created folders and linked in sidebar.
-
-**Commit:**  
-`2025-08-21 20:00 - chore: prepared artifacts directory`
+**AI vs Manual Split:**
+- **AI-Generated (~70%)**: Core architecture, API integrations, UI structure, documentation templates
+- **Manual Edits (~30%)**: API updates, prompt fine-tuning, error handling, personality adjustments, transparency enhancements
