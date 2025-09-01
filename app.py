@@ -3,19 +3,19 @@ import os
 import streamlit as st
 from pathlib import Path
 
-# ✅ Always resolve full path to .env
+# ✅ Load .env if running locally
 env_path = Path(__file__).resolve().parent / ".env"
-st.write(f"DEBUG: Looking for .env at {env_path}")
 load_dotenv(dotenv_path=env_path)
 
-# ✅ Fetch key safely
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_MODEL = os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
+# ✅ Try Streamlit secrets first, then fallback to env
+OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
+OPENAI_MODEL = st.secrets.get("OPENAI_COMPLETION_MODEL", os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini"))
 
 if OPENAI_API_KEY:
-    st.write("✅ OPENAI_API_KEY loaded successfully!")
+    st.write("✅ API key loaded successfully!")
 else:
-    st.write("❌ OPENAI_API_KEY NOT FOUND in .env")
+    st.error("❌ No API key found. Set it in `.env` (local) or Streamlit secrets (cloud).")
+    st.stop()
 
 import openai
 from utils import retrieve
