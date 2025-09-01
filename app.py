@@ -4,6 +4,7 @@ import os
 
 # Load environment variables before anything else
 load_dotenv()
+st.write("DEBUG: OPENAI_API_KEY is", OPENAI_API_KEY[:5] + "..." if OPENAI_API_KEY else "NOT FOUND")
 OPENAI_MODEL = os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
