@@ -1,15 +1,21 @@
 import streamlit as st
 from dotenv import load_dotenv
 import os
-from utils import retrieve
-from prompts import construct_prompt
-import openai
-import subprocess
 
-# Load environment variables
+# Load environment variables before anything else
 load_dotenv()
 OPENAI_MODEL = os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Fail fast if API key is missing
+if not OPENAI_API_KEY:
+    st.error("OPENAI_API_KEY is not set. Please check your .env file and restart the app.")
+    st.stop()
+
+import openai
+from utils import retrieve
+from prompts import construct_prompt
+import subprocess
 
 # Use the new OpenAI client interface
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
