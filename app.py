@@ -3,24 +3,19 @@ import os
 import streamlit as st
 from pathlib import Path
 
-# ✅ Load .env first
+# ✅ Always resolve full path to .env
 env_path = Path(__file__).resolve().parent / ".env"
+st.write(f"DEBUG: Looking for .env at {env_path}")
 load_dotenv(dotenv_path=env_path)
 
-# ✅ Then read the variable
+# ✅ Fetch key safely
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_MODEL = os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
 
-# ✅ Debug
 if OPENAI_API_KEY:
-    st.write("DEBUG: OPENAI_API_KEY is", OPENAI_API_KEY[:5] + "...")
+    st.write("✅ OPENAI_API_KEY loaded successfully!")
 else:
-    st.write("DEBUG: OPENAI_API_KEY is NOT FOUND")
-
-# Fail fast if API key is missing
-if not OPENAI_API_KEY:
-    st.error("OPENAI_API_KEY is not set. Please check your .env file and restart the app.")
-    st.stop()
+    st.write("❌ OPENAI_API_KEY NOT FOUND in .env")
 
 import openai
 from utils import retrieve
