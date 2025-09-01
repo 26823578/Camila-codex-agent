@@ -1,18 +1,21 @@
 from dotenv import load_dotenv
 import os
 import streamlit as st
+from pathlib import Path
 
-# Load .env file
-load_dotenv()
+# ✅ Load .env first
+env_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(dotenv_path=env_path)
 
-# Get environment variables
+# ✅ Then read the variable
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_MODEL = os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
 
-# Debug output
-st.write("DEBUG: OPENAI_API_KEY is", OPENAI_API_KEY[:5] + "..." if OPENAI_API_KEY else "NOT FOUND")
-OPENAI_MODEL = os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# ✅ Debug
+if OPENAI_API_KEY:
+    st.write("DEBUG: OPENAI_API_KEY is", OPENAI_API_KEY[:5] + "...")
+else:
+    st.write("DEBUG: OPENAI_API_KEY is NOT FOUND")
 
 # Fail fast if API key is missing
 if not OPENAI_API_KEY:
