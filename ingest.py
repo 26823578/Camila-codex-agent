@@ -13,7 +13,7 @@ nltk.download('punkt')
 from nltk.tokenize import sent_tokenize
 
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 DATA_DIR = "data"
 VECTOR_DIR = "vectors"
@@ -46,7 +46,7 @@ def chunk_text(text, chunk_size=450, overlap=50):
         tokens = len(sent.split())
         if tokens_in_chunk + tokens > chunk_size:
             chunks.append(" ".join(current_chunk))
-            current_chunk = current_chunk[-overlap:]  # overlap
+            current_chunk = current_chunk[-overlap:] if overlap > 0 else []
             tokens_in_chunk = sum(len(s.split()) for s in current_chunk)
         current_chunk.append(sent)
         tokens_in_chunk += tokens
@@ -56,12 +56,18 @@ def chunk_text(text, chunk_size=450, overlap=50):
     return chunks
 
 def embed_text(texts):
-    client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    response = client.embeddings.create(
-        model=EMBED_MODEL,
-        input=texts
-    )
-    return [np.array(e.embedding, dtype=np.float32) for e in response.data]
+    client = openai.OpenAI(api_key=OPENAI_API_KEY)
+    # OpenAI API accepts up to 2048 inputs per request for embeddings, but batching is safer for large sets
+    batch_size = 64
+    embeddings = []
+    for i in range(0, len(texts), batch_size):
+        batch = texts[i:i+batch_size]
+        response = client.embeddings.create(
+            model=EMBED_MODEL,
+            input=batch
+        )
+        embeddings.extend([np.array(e.embedding, dtype=np.float32) for e in response.data])
+    return embeddings
 
 def main():
     print("Starting ingestion...")
