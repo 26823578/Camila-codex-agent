@@ -9,7 +9,10 @@ import subprocess
 # Load environment variables
 load_dotenv()
 OPENAI_MODEL = os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
-openai.api_key = os.getenv("OPENAI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Use the new OpenAI client interface
+client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 # Streamlit page setup
 st.set_page_config(page_title="Personal Codex", layout="wide")
@@ -81,14 +84,14 @@ with col2:
                     # Build the prompt and get mode info
                     prompt, mode_info = construct_prompt(mode, context_chunks, q)
 
-                    # Call OpenAI API
-                    resp = openai.ChatCompletion.create(
+                    # Call OpenAI API using the new client interface
+                    resp = client.chat.completions.create(
                         model=OPENAI_MODEL,
                         messages=[{"role": "system", "content": prompt}],
                         temperature=mode_info.get("temperature", 0.0),
                         max_tokens=400
                     )
-                    answer = resp["choices"][0]["message"]["content"].strip()
+                    answer = resp.choices[0].message.content.strip()
 
                     st.success("Answer Ready!")
                     st.subheader("Answer")
