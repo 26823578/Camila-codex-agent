@@ -1,9 +1,15 @@
-import streamlit as st
 from dotenv import load_dotenv
 import os
+import streamlit as st
 
-# Load environment variables before anything else
+# Load .env file
 load_dotenv()
+
+# Get environment variables
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_MODEL = os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
+
+# Debug output
 st.write("DEBUG: OPENAI_API_KEY is", OPENAI_API_KEY[:5] + "..." if OPENAI_API_KEY else "NOT FOUND")
 OPENAI_MODEL = os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
