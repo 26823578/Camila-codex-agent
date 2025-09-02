@@ -1,29 +1,15 @@
+import streamlit as st
 from dotenv import load_dotenv
 import os
-import streamlit as st
-from pathlib import Path
-
-# ✅ Load .env if running locally
-env_path = Path(__file__).resolve().parent / ".env"
-load_dotenv(dotenv_path=env_path)
-
-# ✅ Try Streamlit secrets first, then fallback to env
-OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
-OPENAI_MODEL = st.secrets.get("OPENAI_COMPLETION_MODEL", os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini"))
-
-if OPENAI_API_KEY:
-    st.write("✅ API key loaded successfully!")
-else:
-    st.error("❌ No API key found. Set it in `.env` (local) or Streamlit secrets (cloud).")
-    st.stop()
-
-import openai
 from utils import retrieve
 from prompts import construct_prompt
+import openai
 import subprocess
 
-# Use the new OpenAI client interface
-client = openai.OpenAI(api_key=OPENAI_API_KEY)
+# Load environment variables
+load_dotenv()
+OPENAI_MODEL = os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Streamlit page setup
 st.set_page_config(page_title="Personal Codex", layout="wide")
@@ -95,14 +81,14 @@ with col2:
                     # Build the prompt and get mode info
                     prompt, mode_info = construct_prompt(mode, context_chunks, q)
 
-                    # Call OpenAI API using the new client interface
-                    resp = client.chat.completions.create(
+                    # Call OpenAI API
+                    resp = openai.ChatCompletion.create(
                         model=OPENAI_MODEL,
                         messages=[{"role": "system", "content": prompt}],
                         temperature=mode_info.get("temperature", 0.0),
                         max_tokens=400
                     )
-                    answer = resp.choices[0].message.content.strip()
+                    answer = resp["choices"][0]["message"]["content"].strip()
 
                     st.success("Answer Ready!")
                     st.subheader("Answer")
