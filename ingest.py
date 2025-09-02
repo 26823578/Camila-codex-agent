@@ -1,19 +1,25 @@
+# ingest.py (UPDATED for openai-python >= 1.0.0)
 import os
 import json
 import faiss
 import numpy as np
-import openai
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 import docx
 import nltk
-
-nltk.download('punkt')
-
 from nltk.tokenize import sent_tokenize
+from openai import OpenAI
+
+nltk.download('punkt', quiet=True)
 
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# small helper to get OpenAI client
+def get_openai_client():
+    if not OPENAI_API_KEY:
+        raise RuntimeError("No OPENAI_API_KEY set in environment. Please set it in .env or Streamlit secrets.")
+    return OpenAI(api_key=OPENAI_API_KEY)
 
 DATA_DIR = "data"
 VECTOR_DIR = "vectors"
@@ -30,7 +36,12 @@ def read_txt(path):
 
 def read_pdf(path):
     reader = PdfReader(path)
-    return "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
+    pages = []
+    for page in reader.pages:
+        text = page.extract_text()
+        if text:
+            pages.append(text)
+    return "\n".join(pages)
 
 def read_docx(path):
     doc = docx.Document(path)
@@ -44,9 +55,10 @@ def chunk_text(text, chunk_size=450, overlap=50):
 
     for sent in sentences:
         tokens = len(sent.split())
-        if tokens_in_chunk + tokens > chunk_size:
+        if tokens_in_chunk + tokens > chunk_size and current_chunk:
             chunks.append(" ".join(current_chunk))
-            current_chunk = current_chunk[-overlap:]  # overlap
+            # maintain overlap by keeping last N sentences (approx)
+            current_chunk = current_chunk[-overlap:] if overlap < len(current_chunk) else current_chunk[:]
             tokens_in_chunk = sum(len(s.split()) for s in current_chunk)
         current_chunk.append(sent)
         tokens_in_chunk += tokens
@@ -56,17 +68,23 @@ def chunk_text(text, chunk_size=450, overlap=50):
     return chunks
 
 def embed_text(texts):
-    client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    client = get_openai_client()
+    # the new API accepts list of strings and returns .data with embeddings
     response = client.embeddings.create(
         model=EMBED_MODEL,
         input=texts
     )
-    return [np.array(e.embedding, dtype=np.float32) for e in response.data]
+    # return list of numpy arrays
+    return [np.array(item.embedding, dtype=np.float32) for item in response.data]
 
 def main():
     print("Starting ingestion...")
     all_chunks = []
     metadata = []
+    if not os.path.isdir(DATA_DIR):
+        print("No data directory found. Create 'data' and drop files in there.")
+        return
+
     for filename in os.listdir(DATA_DIR):
         path = os.path.join(DATA_DIR, filename)
         if filename.lower().endswith(".txt"):

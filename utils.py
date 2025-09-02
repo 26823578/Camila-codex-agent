@@ -1,11 +1,23 @@
+# utils.py (UPDATED for openai-python >= 1.0.0)
 import os
 import json
 import faiss
 import numpy as np
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
 
 VECTOR_DIR = "vectors"
 INDEX_PATH = os.path.join(VECTOR_DIR, "faiss.index")
 DOCS_PATH = os.path.join(VECTOR_DIR, "docs.jsonl")
+EMBED_MODEL = "text-embedding-3-small"
+
+def get_openai_client():
+    key = os.getenv("OPENAI_API_KEY")
+    if not key:
+        raise RuntimeError("No OPENAI_API_KEY set in environment. Please set it in .env or Streamlit secrets.")
+    return OpenAI(api_key=key)
 
 def load_index():
     if not os.path.exists(INDEX_PATH) or not os.path.exists(DOCS_PATH):
@@ -25,20 +37,16 @@ def retrieve(query, k=4):
     Retrieves top-k chunks for a given query.
     Returns list of dicts with {text, meta}.
     """
-    import openai
-    from dotenv import load_dotenv
-    load_dotenv()
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-
     # Load FAISS index and docs
     index, docs = load_index()
 
-    # Get query embedding
-    resp = openai.Embedding.create(
-        model="text-embedding-3-small",
+    # Get query embedding using new client
+    client = get_openai_client()
+    resp = client.embeddings.create(
+        model=EMBED_MODEL,
         input=query
     )
-    query_vec = np.array(resp["data"][0]["embedding"], dtype=np.float32).reshape(1, -1)
+    query_vec = np.array(resp.data[0].embedding, dtype=np.float32).reshape(1, -1)
 
     # Search in FAISS
     distances, indices = index.search(query_vec, k)
@@ -51,3 +59,4 @@ def retrieve(query, k=4):
                 "meta": docs[idx]["meta"]
             })
     return results
+

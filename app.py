@@ -1,15 +1,26 @@
+# app.py (UPDATED for openai-python >= 1.0.0)
 import streamlit as st
 from dotenv import load_dotenv
 import os
 from utils import retrieve
 from prompts import construct_prompt
-import openai
+from openai import OpenAI
 import subprocess
 
 # Load environment variables
 load_dotenv()
 OPENAI_MODEL = os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
-openai.api_key = os.getenv("OPENAI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# sanity check for API key
+if not OPENAI_API_KEY:
+    st.warning("No OPENAI_API_KEY found in environment. Set it in .env (local) or Streamlit secrets (cloud).")
+
+# create client (will still work if OPENAI_API_KEY is None, but calls will fail)
+def get_openai_client():
+    if not OPENAI_API_KEY:
+        raise RuntimeError("No OPENAI_API_KEY set in environment. Please set it in .env or Streamlit secrets.")
+    return OpenAI(api_key=OPENAI_API_KEY)
 
 # Streamlit page setup
 st.set_page_config(page_title="Personal Codex", layout="wide")
@@ -81,14 +92,18 @@ with col2:
                     # Build the prompt and get mode info
                     prompt, mode_info = construct_prompt(mode, context_chunks, q)
 
-                    # Call OpenAI API
-                    resp = openai.ChatCompletion.create(
-                        model=OPENAI_MODEL,
-                        messages=[{"role": "system", "content": prompt}],
-                        temperature=mode_info.get("temperature", 0.0),
-                        max_tokens=400
-                    )
-                    answer = resp["choices"][0]["message"]["content"].strip()
+                    # Call OpenAI API (new client)
+                    try:
+                        client = get_openai_client()
+                        resp = client.chat.completions.create(
+                            model=OPENAI_MODEL,
+                            messages=[{"role": "system", "content": prompt}],
+                            temperature=mode_info.get("temperature", 0.0),
+                            max_tokens=400
+                        )
+                        answer = resp.choices[0].message.content.strip()
+                    except Exception as e:
+                        raise RuntimeError(f"OpenAI request failed: {e}")
 
                     st.success("Answer Ready!")
                     st.subheader("Answer")
