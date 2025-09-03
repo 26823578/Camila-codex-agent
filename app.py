@@ -9,8 +9,16 @@ import subprocess
 
 # Load environment variables
 load_dotenv()
-OPENAI_MODEL = os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+OPENAI_MODEL = (
+    os.getenv("OPENAI_COMPLETION_MODEL")
+    or st.secrets.get("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
+)
+
+OPENAI_API_KEY = (
+    os.getenv("OPENAI_API_KEY")
+    or st.secrets.get("OPENAI_API_KEY")
+)
 
 # sanity check for API key
 if not OPENAI_API_KEY:
