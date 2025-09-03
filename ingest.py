@@ -119,4 +119,4 @@ def main():
     print(f"FAISS index and metadata saved in {VECTOR_DIR}")
 
 if __name__ == "__main__":
-    main()
+    ma
