@@ -1,10 +1,11 @@
-# utils.py (UPDATED for openai-python >= 1.0.0)
+# utils.py (UPDATED for openai-python >= 1.0.0 + Streamlit secrets fallback)
 import os
 import json
 import faiss
 import numpy as np
 from dotenv import load_dotenv
 from openai import OpenAI
+import streamlit as st  # 👈 added
 
 load_dotenv()
 
@@ -13,11 +14,21 @@ INDEX_PATH = os.path.join(VECTOR_DIR, "faiss.index")
 DOCS_PATH = os.path.join(VECTOR_DIR, "docs.jsonl")
 EMBED_MODEL = "text-embedding-3-small"
 
+
 def get_openai_client():
-    key = os.getenv("OPENAI_API_KEY")
+    """
+    Create OpenAI client using either local .env or Streamlit secrets.
+    """
+    key = (
+        os.getenv("OPENAI_API_KEY")
+        or st.secrets.get("OPENAI_API_KEY")  # 👈 fallback for Streamlit Cloud
+    )
     if not key:
-        raise RuntimeError("No OPENAI_API_KEY set in environment. Please set it in .env or Streamlit secrets.")
+        raise RuntimeError(
+            "No OPENAI_API_KEY set. Please set it in .env (local) or Streamlit secrets (cloud)."
+        )
     return OpenAI(api_key=key)
+
 
 def load_index():
     if not os.path.exists(INDEX_PATH) or not os.path.exists(DOCS_PATH):
@@ -31,6 +42,7 @@ def load_index():
             docs.append(json.loads(line.strip()))
     
     return index, docs
+
 
 def retrieve(query, k=4):
     """
@@ -59,4 +71,3 @@ def retrieve(query, k=4):
                 "meta": docs[idx]["meta"]
             })
     return results
-
