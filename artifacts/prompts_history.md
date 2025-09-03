@@ -262,7 +262,8 @@ Each entry includes: **AI Tool Used**, **Prompt**, **AI Response summary**, **Ma
 **Commit:**  
 ` - UI testing`
 
----
+##Infamous Final Prompt: 
+You are an AI engineer, use your technical skills to solve this issue through examining the code -- this prompt included app.py, ingest.py, utils.py -- outcome included solutions to the open.AI embedding issue, after examining the code, I made slight changes to ensure it matched the agent. This was acheived after various attempts. 
 
 ## AI Collaboration Summary
 
