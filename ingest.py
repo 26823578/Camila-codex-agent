@@ -1,4 +1,4 @@
-# ingest.py (UPDATED for openai-python >= 1.0.0 + Streamlit secrets fallback)
+# ingest.py
 import os
 import json
 import faiss
@@ -9,33 +9,17 @@ import docx
 import nltk
 from nltk.tokenize import sent_tokenize
 from openai import OpenAI
-import streamlit as st  # 👈 added
+from helpers import get_api_key   # <--- NEW
 
 nltk.download('punkt', quiet=True)
 
 load_dotenv()
-
-DATA_DIR = "data"
-VECTOR_DIR = "vectors"
-os.makedirs(VECTOR_DIR, exist_ok=True)
-
-INDEX_PATH = os.path.join(VECTOR_DIR, "faiss.index")
-DOCS_PATH = os.path.join(VECTOR_DIR, "docs.jsonl")
-
-EMBED_MODEL = "text-embedding-3-small"
-
+OPENAI_API_KEY = get_api_key()   # <--- USE HELPER
 
 def get_openai_client():
-    """
-    Create OpenAI client using either local .env or Streamlit secrets.
-    """
-    key = (
-        os.getenv("OPENAI_API_KEY")
-        or st.secrets.get("OPENAI_API_KEY")  # 👈 fallback for Streamlit Cloud
-    )
-    if not key:
-        raise RuntimeError("No OPENAI_API_KEY set in .env or Streamlit secrets.")
-    return OpenAI(api_key=key)
+    if not OPENAI_API_KEY:
+        raise RuntimeError("No OPENAI_API_KEY found. Set it in .env or Streamlit secrets.")
+    return OpenAI(api_key=OPENAI_API_KEY)
 
 
 def read_txt(path):

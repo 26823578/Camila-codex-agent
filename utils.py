@@ -1,11 +1,11 @@
-# utils.py (UPDATED for openai-python >= 1.0.0 + Streamlit secrets fallback)
+# utils.py
 import os
 import json
 import faiss
 import numpy as np
 from dotenv import load_dotenv
 from openai import OpenAI
-import streamlit as st  # 👈 added
+from helpers import get_api_key   # <--- NEW
 
 load_dotenv()
 
@@ -14,19 +14,10 @@ INDEX_PATH = os.path.join(VECTOR_DIR, "faiss.index")
 DOCS_PATH = os.path.join(VECTOR_DIR, "docs.jsonl")
 EMBED_MODEL = "text-embedding-3-small"
 
-
 def get_openai_client():
-    """
-    Create OpenAI client using either local .env or Streamlit secrets.
-    """
-    key = (
-        os.getenv("OPENAI_API_KEY")
-        or st.secrets.get("OPENAI_API_KEY")  # 👈 fallback for Streamlit Cloud
-    )
+    key = get_api_key()   # <--- USE HELPER
     if not key:
-        raise RuntimeError(
-            "No OPENAI_API_KEY set. Please set it in .env (local) or Streamlit secrets (cloud)."
-        )
+        raise RuntimeError("No OPENAI_API_KEY found. Set it in .env or Streamlit secrets.")
     return OpenAI(api_key=key)
 
 

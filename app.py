@@ -1,4 +1,4 @@
-# app.py (UPDATED for openai-python >= 1.0.0)
+# app.py
 import streamlit as st
 from dotenv import load_dotenv
 import os
@@ -6,28 +6,18 @@ from utils import retrieve
 from prompts import construct_prompt
 from openai import OpenAI
 import subprocess
+from helpers import get_api_key   # <--- NEW
 
 # Load environment variables
 load_dotenv()
-
-OPENAI_MODEL = (
-    os.getenv("OPENAI_COMPLETION_MODEL")
-    or st.secrets.get("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
-)
-
-OPENAI_API_KEY = (
-    os.getenv("OPENAI_API_KEY")
-    or st.secrets.get("OPENAI_API_KEY")
-)
+OPENAI_MODEL = os.getenv("OPENAI_COMPLETION_MODEL", "gpt-4o-mini")
+OPENAI_API_KEY = get_api_key()   # <--- USE HELPER
 
 # sanity check for API key
 if not OPENAI_API_KEY:
-    st.warning("No OPENAI_API_KEY found in environment. Set it in .env (local) or Streamlit secrets (cloud).")
+    st.error("No OPENAI_API_KEY found. Set it in .env (local) or Streamlit secrets (cloud).")
 
-# create client (will still work if OPENAI_API_KEY is None, but calls will fail)
 def get_openai_client():
-    if not OPENAI_API_KEY:
-        raise RuntimeError("No OPENAI_API_KEY set in environment. Please set it in .env or Streamlit secrets.")
     return OpenAI(api_key=OPENAI_API_KEY)
 
 # Streamlit page setup
